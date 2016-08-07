@@ -10,7 +10,7 @@ import (
 	nrc "github.com/nexustix/nxReplicatorCommon"
 )
 
-// nxfusion add amazingpack supermod
+// nxfusion add amazingMolecule amazingAtom
 
 func main() {
 	//fmt.Println("Hello World")
@@ -52,8 +52,20 @@ func addAtom(atomManager *nrc.AtomManager, moleculeDir, packName, providerID, at
 		tmpMolecule.LoadFromFile(filePath)
 
 		tmpMoleculeItem := nrc.MoleculeItem{Explicit: true, ProviderID: tmpAtom.Provider, AtomID: tmpAtom.ID, Dir: tmpAtom.RelativePath}
-
 		tmpMolecule.AddItem(tmpMoleculeItem)
+
+		for _, v := range tmpAtom.Dependencies {
+			var tmpDepItem nrc.MoleculeItem
+			if atomManager.HasEntry(tmpAtom.Provider, v) {
+				tmpDependency := atomManager.GetEntry(tmpAtom.Provider, v)
+				tmpDepItem = nrc.MoleculeItem{Explicit: false, ProviderID: tmpDependency.Provider, AtomID: tmpDependency.ID, Dir: tmpDependency.RelativePath}
+			} else {
+				fmt.Printf("<!> WARNING no source for '%s' found (adding wildcard entry)\n", v)
+				tmpDepItem = nrc.MoleculeItem{Explicit: false, ProviderID: "", AtomID: v, Dir: "mods"}
+			}
+			tmpMolecule.AddItem(tmpDepItem)
+		}
+
 		tmpMolecule.SaveToFile(filePath)
 	} else {
 		fmt.Printf("<!> ERROR Atom >%s< not found\n", atomID)
@@ -80,7 +92,7 @@ func listAtoms(moleculeDir, packName string) {
 	tmpMolecule.LoadFromFile(filePath)
 	fmt.Printf("-----\n")
 	for k, v := range tmpMolecule.MoleculeItems {
-		fmt.Printf("(%v) <%v> %s\n", k, v.Explicit, v.AtomID)
+		fmt.Printf("(%v) <%v> <%s> %s\n", k, v.Explicit, v.ProviderID, v.AtomID)
 	}
 	fmt.Printf("-----\n")
 }
