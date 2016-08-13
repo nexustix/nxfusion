@@ -13,7 +13,9 @@ import (
 // nxfusion add amazingMolecule amazingAtom
 
 func main() {
-	//fmt.Println("Hello World")
+	version := "V.0-1-0"
+	fmt.Printf("<-> NxFusion Version: %s\n", version)
+
 	args := os.Args
 
 	usr, err := user.Current()
