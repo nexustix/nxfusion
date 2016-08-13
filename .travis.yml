@@ -1,0 +1,19 @@
+language: go
+go:
+- 1.6
+install:
+- go get github.com/nexustix/boilerplate
+- go get github.com/nxReplicator/nxReplicatorCommon
+before_deploy:
+- env GOOS=linux GOARCH=amd64 go build -o ${HOME}/dist/linux64/nxfusion github.com/nxReplicator/nxfusion
+- env GOOS=windows GOARCH=amd64 go build -o ${HOME}/dist/windows64/nxfusion.exe github.com/nxReplicator/nxfusion
+deploy:
+  provider: releases
+  api_key:
+    secure: wb7zj1lGIg8VZvNb5U3mm27GpJGiCJpQX4r4kThaz/av/7yNpgjPj4INIsC8dIx2m66BBUZXMbXg00WScsLAer6Hlp4voRSLe3j8E8sR5+gvY1WnshEOZpyAdArptdtRHAQPlClfSQWczEHvgbYJim754L8RawHC6nPzyNNWRP2lXl4OUOX/b9bm59SNciPlP2YEXZp+yo5ryPlDdO6fHUygOY4Bm5w8XNtvmjEnAFRZh2ADdwuf1naZgWjZkZo1aMeZtHaf6/dSAL6xJB7U3ysApEg8Pvq64U3q6hu86A/8YRCxhzZgDS8emOG2jr/U5zuG8PB/TZDCthWA7K48hzAOWxvlZdtP+jkLbcGmb7I4PLnFtfnftM6REFRYEtVb4ADgC4Y8foAms9HvHiLwwc3zcRr+ceO2BwbkyMXzHhJgvhef1YZjEfoeVYYxUTMxb7Ti71bPIlT2YfViFmtJQzdVbnhHoADEwSOyS3jLkFnerL4kidqLBallzQTirBR9HU2p9M2Dx5M403QbS9B+R5i7TqHu7+8ViCsoq3zQz4q//nS1xCJ/N1OcH1TdDtewqVJj+opLR/Hqt50xjSZwXKD9gynoG+fe/KPbyL8A5c0CvSHl6A4XNJN6WycDPW+2tO+Wj3Zmih4lLidRPZzCJm4nKWAYQbfUef9wMVOZS8k=
+  file:
+    - "${HOME}/dist/windows64/nxfusion.exe"
+    - "${HOME}/dist/linux64/nxfusion"
+  skip_cleanup: true
+  on:
+    tags: true
