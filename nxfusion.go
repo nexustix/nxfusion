@@ -11,6 +11,7 @@ import (
 )
 
 // nxfusion add amazingMolecule amazingAtom
+// nxfusion add amazingMolecule curse amazingAtom
 
 func main() {
 	version := "V.0-1-0"
@@ -58,14 +59,16 @@ func addAtom(atomManager *nrc.AtomManager, moleculeDir, packName, providerID, at
 
 		for _, v := range tmpAtom.Dependencies {
 			var tmpDepItem nrc.MoleculeItem
+			//XXX wildcard feature causes unintended side effects
 			if atomManager.HasEntry(tmpAtom.Provider, v) {
 				tmpDependency := atomManager.GetEntry(tmpAtom.Provider, v)
 				tmpDepItem = nrc.MoleculeItem{Explicit: false, ProviderID: tmpDependency.Provider, AtomID: tmpDependency.ID, Dir: tmpDependency.RelativePath}
+				tmpMolecule.AddItem(tmpDepItem)
 			} else {
-				fmt.Printf("<!> WARNING no source for '%s' found (adding wildcard entry)\n", v)
-				tmpDepItem = nrc.MoleculeItem{Explicit: false, ProviderID: "", AtomID: v, Dir: "mods"}
+				//fmt.Printf("<!> WARNING no source for '%s' found (adding wildcard entry)\n", v)
+				//tmpDepItem = nrc.MoleculeItem{Explicit: false, ProviderID: "", AtomID: v, Dir: "mods"}
 			}
-			tmpMolecule.AddItem(tmpDepItem)
+			//tmpMolecule.AddItem(tmpDepItem)
 		}
 
 		tmpMolecule.SaveToFile(filePath)
